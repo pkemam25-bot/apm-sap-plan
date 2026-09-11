@@ -125,5 +125,21 @@ flowchart LR
     P --> T2[("Tab 2: APM Plan & FTE<br/>date cols D:G, status dropdowns,<br/>FTE grid 14 pos x 23 months")]
 ```
 
+## 12. Implementation Plan & Priorities
+
+| # | Step (high level) | Priority | End-to-end test / acceptance |
+|---|-------------------|----------|------------------------------|
+| 1 | Add unit tests for builder core (`parse_dates`, seeding rules, sheet structure) | P1 | `pytest` green; `python build_gantt.py` regenerates workbook that opens in Excel with both tabs, bars, FTE grid intact |
+| 2 | Bake real FTE values into the script (replace mock samples) when provided | P1 | Total FTE row = sum of positions × months; spot-check against provided real data |
+| 3 | Parameterize constants (GO_LIVE, grid start/end) via config or args | P2 | Run with a test GO_LIVE date → today marker & Go-Live block move correctly in regenerated file |
+| 4 | Auto-refresh TBC dates once confirmed (edit source → regenerate) | P3 | Edit a source date → regenerated workbook reflects it; `SAP Timeline` linked cells stay in sync |
+| 5 | Decide manual-edit policy (bake-in vs. protected columns) and document | P3 | Manual edits either survive regeneration or are explicitly listed as baked-in |
+
+## 13. Testing Strategy
+
+- **Unit tests:** written and run by Buffy — `pytest` + openpyxl assertions against the generated workbook (sheet names, key cells, FTE totals, conditional-formatting rule counts, dropdown validations). Location: `tests/`, run with `pytest`.
+- **E2E verification:** after each step above — regenerate workbook, load with openpyxl, and open in Excel for visual check (bars, dropdowns, date pickers).
+- **Rule:** a step is *done* only when its E2E acceptance passes and tests are green. Tag only from a green state.
+
 ---
 *Maintained by the APM team. Update on every release/tag.*
