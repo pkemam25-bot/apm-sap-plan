@@ -1,4 +1,4 @@
-# Generated Excel backups (kept locally for safety - not versioned)
+# Generated Excel backups (kept locally for safety)
 *backup*.xlsx
 
 # Local scratch/backup folder
@@ -6,3 +6,27 @@ bk/
 
 # Python cache
 __pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+.env
+.env.local
+venv/
+.venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.log
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
