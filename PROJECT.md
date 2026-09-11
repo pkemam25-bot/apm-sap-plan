@@ -78,5 +78,52 @@ python summarize_djc.py          # DJC hours summary (Apr-May)
 - Related repo: `apm-revised-master-plan` (revision of the master plan)
 - Monorepo of origin: `vscode-projects`
 
+## 11. Diagrams
+
+### User Flow
+
+```mermaid
+flowchart TD
+    PM["APM team updates source plan<br/>in APM SAP Plan.xlsx"] --> RUN["Run: python build_gantt.py"]
+    RUN --> GEN["Workbook regenerated<br/>+ auto-backup of previous version"]
+    GEN --> SAP["SAP stakeholders<br/>view 'SAP Timeline' (read-only)"]
+    GEN --> APM["APM team edits<br/>'APM Plan & FTE' (dates, status, FTE)"]
+    APM --> WARN["Caution: manual edits are overwritten<br/>on next regeneration"]
+```
+
+### System Architecture
+
+```mermaid
+graph LR
+    subgraph Local machine
+        SRC[("APM SAP Plan.xlsx<br/>source plan")] --> B["build_gantt.py<br/>Python 3.12 + openpyxl"]
+        B --> OUT[("APM SAP Plan - Gantt.xlsx<br/>2 tabs, live conditional formatting")]
+        B --> BK[("timestamped backups<br/>git-ignored, local only")]
+    end
+    OUT --> V1["SAP stakeholders<br/>SAP Timeline tab"]
+    OUT --> V2["APM team<br/>APM Plan & FTE tab"]
+    GIT["Git + GitHub<br/>pkemam25-bot/apm-sap-plan"] -. versions .- B
+```
+
+### Data Architecture
+
+```mermaid
+flowchart LR
+    subgraph Source sheet [SAP APM Plan]
+        C1["5 sections (A-E)"]
+        C2["12 activities + WBS no."]
+        C3["SAP Plan dates (col D)"]
+        C4["APM Plan dates (col F)"]
+        C5["Mock readiness + remarks"]
+    end
+    C1 --> P["parse_dates() + build rules"]
+    C2 --> P
+    C3 --> P
+    C4 --> P
+    C5 --> P
+    P --> T1[("Tab 1: SAP Timeline<br/>linked formulas to master")]
+    P --> T2[("Tab 2: APM Plan & FTE<br/>date cols D:G, status dropdowns,<br/>FTE grid 14 pos x 23 months")]
+```
+
 ---
 *Maintained by the APM team. Update on every release/tag.*
